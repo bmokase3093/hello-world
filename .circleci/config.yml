@@ -19,10 +19,15 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - run: echo world
-      - run:
-          name: "echo envr var that is part of our project"
-          command:
-            echo $MY_NAME # this must be set within the project
+    
+  print_name:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+     - run:
+        name: "echo envr var that is part of our project"
+        command:
+          echo $MY_NAME # this must be set within the project
 # Orchestrate or schedule a set of job
 workflows:
   # Name of the workflow "welcome"
@@ -34,3 +39,4 @@ workflows:
       - print_world:
           requires:
             - print_hello
+      -print_name
