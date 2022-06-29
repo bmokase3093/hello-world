@@ -1,43 +1,28 @@
-# Use the lastest version of circleCi pipeline process engine
+# Sharing files between jobs
 version: 2.1
-
-# Use a package of configuration called an orb.
-orbs:
-  # Declare a dependency on the welcomme-orb
-  welcome: circleci/welcome-orb@0.4.1
-
-# jobs to be run
 jobs:
-  print_hello:
+  save_hello_world_output:
     docker:
       - image: circleci/node:13.8.0
     steps:
-      - run: echo hello
+      - run: echo "hello world" > ~/output.txt
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - output.txt
 
-  print_world:
+  print_output_file:
     docker:
       - image: circleci/node:13.8.0
     steps:
-      - run: echo world
-    
-  print_name:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-     - checkout
-     - run:
-        name: "echo envr var that is part of our project"
-        command:  |
-          echo $MY_NAME
-# Orchestrate or schedule a set of job
+      - attach_workspace:
+          at: ~/
+      - run: cat ~/output.txt
+
 workflows:
-  # Name of the workflow "welcome"
-  welcome:
-    # run the welcome/run job in its own container
+  my_workflow:
     jobs:
-      - welcome/run
-      - print_hello
-      - print_world:
+      - save_hello_world_output
+      - print_output_file:
           requires:
-            - print_hello
-      - print_name
+            - save_hello_world_output
