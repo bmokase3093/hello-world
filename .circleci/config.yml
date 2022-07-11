@@ -1,5 +1,6 @@
 version: 2.1
 # create the infrastructure
+# Configure the infrastructure using ansible playbook
 
 orbs:
   # Choose either one of the obrs below
@@ -8,20 +9,39 @@ orbs:
 
 # Define the jobs we want to run as build
 jobs:
-  create_infrastructure:
+  #create_infrastructure:
+  #  docker:
+  #    - image: amazon/aws-cli
+  #  steps:
+  #    - checkout
+  #    - run:
+  #        name: Create Cloudformation Stack
+  #        command:  |
+  #          aws cloudformation deploy \
+  #            --template-file template.yml \
+  #            --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
+  #            --region us-west-2
+
+  # Exercise config and Deployment
+  configure_infrastructure:
     docker:
-      - image: amazon/aws-cli
+      - image: python:3.7-alpine3.11
     steps:
       - checkout
+      - add_ssh_keys:
+          fingerprints: ["8b:c3:7a:2e:d0:a6:a4:1a:47:57:f8:84:14:04:d7:4f"]
       - run:
-          name: Create Cloudformation Stack
-          command:  |
-            aws cloudformation deploy \
-              --template-file template.yml \
-              --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
-              --region us-west-2
+          name: Install dependencies
+          command: |
+            # install the dependencies needed for your playbook
+            apk add --update ansible
+      - run:
+          name: Configure server
+          command: |
+            ansible-playbook -invetory.txt main.yml
 
 workflows:
   my_workflow:
     jobs:
-      - create_infrastructure
+     # - create_infrastructure
+      - configure_infrastructure
