@@ -9,18 +9,18 @@ orbs:
 
 # Define the jobs we want to run as build
 jobs:
-  #create_infrastructure:
-  #  docker:
-  #    - image: amazon/aws-cli
-  #  steps:
-  #    - checkout
-  #    - run:
-  #        name: Create Cloudformation Stack
-  #        command:  |
-  #          aws cloudformation deploy \
-  #            --template-file template.yml \
-  #            --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
-  #            --region us-west-2
+  create_infrastructure:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Create Cloudformation Stack
+          command:  |
+            aws cloudformation deploy \
+              --template-file template.yml \
+              --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
+              --region us-west-2
 
   # Exercise config and Deployment
   #configure_infrastructure:
@@ -41,25 +41,25 @@ jobs:
   #          ansible-playbook -i inventory.txt main.yml
 
   # Creating a smoke Testing Job
-  smoke_test:
-    docker:
-      - image: alpine:latest
-    steps:
-      - run: apk add --update curl
-      - run:
-          name: smoke test
-          command: |
-            URL="https://blog.u333dacity.com/"
-            # Test if the website exits
-            if curl -s --head ${URL}
-            then
-              return 0
-            else
-              return 1
-            fi
+  #smoke_test:
+  #  docker:
+  #    - image: alpine:latest
+  #  steps:
+  #    - run: apk add --update curl
+  #    - run:
+  #        name: smoke test
+  #        command: |
+  #          URL="https://blog.u333dacity.com/"
+  #          # Test if the website exits
+  #          if curl -s --head ${URL}
+  #          then
+  #            return 0
+  #          else
+  #            return 1
+  #          fi
 workflows:
   my_workflow:
     jobs:
-     # - create_infrastructure
+      - create_infrastructure
      # - configure_infrastructure
-      - smoke_test
+     # - smoke_test
