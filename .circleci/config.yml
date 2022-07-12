@@ -83,7 +83,7 @@ jobs:
           # Fail the job intentionally to simulate error
           command: return 1
       - destroy_environment
-      
+
 workflows:
   my_workflow:
     jobs:
