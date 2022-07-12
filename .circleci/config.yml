@@ -49,7 +49,7 @@ jobs:
       - run:
           name: smoke test
           command: |
-            URL="https://blog.udacity.com/"
+            URL="https://blog.u333dacity.com/"
             # Test if the website exits
             if curl -s --head ${URL}
             then
