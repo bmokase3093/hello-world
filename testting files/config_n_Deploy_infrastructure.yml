@@ -1,0 +1,32 @@
+version: 2.1
+# Configure the infrastructure using ansible playbook
+
+orbs:
+  # Choose either one of the obrs below
+  # welcome: circleci/welcome-orb@0.4.1
+  aws-cli: circleci/aws-cli@2.0.3
+
+# Define the jobs we want to run as build
+jobs:
+  # Exercise config and Deployment
+  configure_infrastructure:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: ["8b:c3:7a:2e:d0:a6:a4:1a:47:57:f8:84:14:04:d7:4f"]
+      - run:
+          name: Install dependencies
+          command: |
+            # install the dependencies needed for your playbook
+            apk add --update ansible
+      - run:
+          name: Configure server
+          command: |
+            ansible-playbook -i inventory.txt main.yml
+
+workflows:
+  my_workflow:
+    jobs:
+      - configure_infrastructure
